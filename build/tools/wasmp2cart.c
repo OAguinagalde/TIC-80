@@ -50,7 +50,7 @@ char * readFile(char* name, unsigned int* size) {
     FILE* file = fopen(name, "rb");
 
     if(!file) {
-        printf("cannot open file file\n");
+        printf("cannot open file %s\n", name);
         return NULL;
     }
 
@@ -99,8 +99,19 @@ int main(int argc, char** argv)
             printf("could not load WASM file\n");
             return res;
         }
+        // & (ff wasmp2cart.exe) gamezig.wasmp cartridge --binary ./zig-out/lib/cart.wasm
         memcpy(cart->binary.data, wasm_contents, wasm_size);
         cart->binary.size = wasm_size;
+        printf("Notes: wasm_size is %d\n", wasm_size);
+        printf("Notes: sizeof tic_cartridge is %d\n", sizeof (tic_cartridge));
+        printf("Notes: sizeof tic_bank is %d\n", sizeof(tic_bank));
+        printf("Notes: number of tic_bank is %d\n", TIC_BANKS);
+        printf("Notes: sizeof tic_bank[TIC_BANKS] is %d\n", sizeof(tic_bank) * TIC_BANKS);
+        printf("Notes: sizeof tic_code is %d\n", sizeof(tic_code));
+        printf("Notes: sizeof tic_binary is %d\n", sizeof(tic_binary));
+        printf("Notes: Sum sizeof(tic_bank) * TIC_BANKS + sizeof(tic_binary) + sizeof(tic_code) + sizeof(u8) is %d\n", 
+            (sizeof(tic_bank)) * TIC_BANKS + sizeof(tic_binary) + sizeof(tic_code) + sizeof(u8));
+        printf("Notes: So there is padding inserted of %d\n", sizeof(tic_cartridge) - ((sizeof(tic_bank)) * TIC_BANKS + sizeof(tic_binary) + sizeof(tic_code) + sizeof(u8)));
         free(wasm_contents);
     }
 
